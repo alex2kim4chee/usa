@@ -1,0 +1,70 @@
+body {
+    font-family: Arial, sans-serif;
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2 {
+    text-align: center;
+    color: #333;
+}
+
+p, ul {
+    text-align: center;
+    color: #555;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul li {
+    padding: 5px 0;
+}
+
+label {
+    font-size: 0.9em;
+    color: #555;
+}
+
+input, select, button {
+    width: 100%;
+    margin: 8px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#sendRequest, #exchangeRateInfo, #productSizeContainer, #productColorContainer, #productConfigContainer {
+    display: none;
+}
+
+h3 {
+    text-align: center;
+    font-size: 1.2em;
+    color: #222;
+}
+
+p {
+    text-align: center;
+    font-size: 0.9em;
+    color: #777;
+}
