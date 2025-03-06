@@ -35,7 +35,7 @@ label {
 }
 
 input, select, button {
-    width: calc(100% - 20px);
+    width: 100%;
     margin: 8px 0;
     padding: 10px;
     border: 1px solid #ddd;
@@ -50,6 +50,7 @@ button {
     cursor: pointer;
     border: none;
     transition: background 0.3s;
+    width: 100%;
 }
 
 button:hover {
