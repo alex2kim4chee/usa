@@ -70,3 +70,18 @@ p {
     font-size: 0.9em;
     color: #777;
 }
+
+#termsContainer {
+    text-align: left;
+    font-size: 0.9em;
+    line-height: 1.5;
+    color: #555;
+}
+#termsContainer h2 {
+    font-size: 1.2em;
+    color: #222;
+    margin-bottom: 10px;
+}
+#termsContainer p {
+    margin-bottom: 5px;
+}
