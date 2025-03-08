@@ -74,11 +74,6 @@ function loadTerms() {
         .then(response => response.text())
         .then(data => {
             termsContainer.innerHTML = data;
-            termsContainer.style.marginTop = "40px";
-            termsContainer.style.padding = "15px";
-            termsContainer.style.border = "1px solid #ddd";
-            termsContainer.style.borderRadius = "5px";
-            termsContainer.style.backgroundColor = "#f9f9f9";
         })
         .catch(error => console.error('Ошибка загрузки условий:', error));
 }
