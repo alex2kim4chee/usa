@@ -5,20 +5,28 @@ function updateFields() {
     document.getElementById('productConfigContainer').style.display = category === 'Аксессуары' ? 'block' : 'none';
 }
 
+let cachedExchangeRate = null;
 async function fetchExchangeRate() {
+    if (cachedExchangeRate) return cachedExchangeRate;
+    
     try {
         const response = await fetch('https://www.cbr-xml-daily.ru/daily_json.js');
         const data = await response.json();
-        return data.Valute.USD.Value;
+        cachedExchangeRate = data.Valute.USD.Value;
+        return cachedExchangeRate;
     } catch (error) {
         console.error('Ошибка получения курса:', error);
+        alert('Не удалось получить курс доллара. Попробуйте позже.');
         return null;
     }
 }
 
 async function calculateTotal() {
     const priceUSD = parseFloat(document.getElementById('productPrice').value);
-    if (isNaN(priceUSD)) return;
+    if (isNaN(priceUSD) || priceUSD <= 0) {
+        alert('Введите корректную цену товара.');
+        return;
+    }
     
     const priceWithVAT = Math.ceil(priceUSD * 1.09);
     document.getElementById('priceWithVATDisplay').innerText = 'Цена с НДС (9%): ' + priceWithVAT + ' $';
@@ -36,11 +44,16 @@ async function calculateTotal() {
 }
 
 function generateWhatsAppLink(priceWithVAT, finalPrice) {
-    const productLink = document.getElementById('productLink').value;
-    const productName = document.getElementById('productName').value;
-    const productSize = document.getElementById('productSizeContainer').style.display !== 'none' ? document.getElementById('productSize').value : '';
-    const productColor = document.getElementById('productColorContainer').style.display !== 'none' ? document.getElementById('productColor').value : '';
-    const productConfig = document.getElementById('productConfigContainer').style.display !== 'none' ? document.getElementById('productConfig').value : '';
+    const productLink = document.getElementById('productLink').value.trim();
+    const productName = document.getElementById('productName').value.trim();
+    const productSize = document.getElementById('productSizeContainer').style.display !== 'none' ? document.getElementById('productSize').value.trim() : '';
+    const productColor = document.getElementById('productColorContainer').style.display !== 'none' ? document.getElementById('productColor').value.trim() : '';
+    const productConfig = document.getElementById('productConfigContainer').style.display !== 'none' ? document.getElementById('productConfig').value.trim() : '';
+
+    if (!productName || !productLink) {
+        alert('Заполните обязательные поля: Название и Ссылка на товар.');
+        return;
+    }
 
     let message = `Запрос на товар:\nНазвание: ${productName}`;
     if (productSize) message += `\nРазмер: ${productSize}`;
