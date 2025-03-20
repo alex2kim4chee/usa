@@ -67,8 +67,7 @@ function generateWhatsAppLink(priceWithVAT, finalPrice) {
     sendRequestBtn.style.display = 'block';
     sendRequestBtn.onclick = () => window.open(whatsappLink, '_blank');
 }
-
-// Функция загрузки файлов
+// Функция загрузки файлов в контейнеры
 function loadContent(containerId, filePath) {
     const container = document.getElementById(containerId);
     fetch(filePath)
@@ -79,20 +78,20 @@ function loadContent(containerId, filePath) {
         .catch(error => console.error(`Ошибка загрузки ${filePath}:`, error));
 }
 
-// Запускаем загрузку контента при загрузке страницы
+// Загружаем файлы при загрузке страницы
 document.addEventListener("DOMContentLoaded", () => {
     loadContent("termsContainer", "terms.html");
     loadContent("agentTermsContainer", "agent_terms.html");
 });
 
-// Аккордеон для раскрытия секций
+// Логика аккордеона
 document.addEventListener("DOMContentLoaded", () => {
     const accordionButtons = document.querySelectorAll(".accordion-button");
 
     accordionButtons.forEach(button => {
         button.addEventListener("click", () => {
             const content = button.nextElementSibling;
-            
+
             // Закрываем другие открытые элементы
             document.querySelectorAll(".accordion-content").forEach(item => {
                 if (item !== content) {
