@@ -112,3 +112,53 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+
+async function loadProductData() {
+    const productUrl = document.getElementById("productLink").value;
+    if (!productUrl) {
+        alert("Введите ссылку на товар.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(productUrl)}`);
+        const data = await response.json();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(data.contents, "text/html");
+
+        // Поиск микроразметки Schema.org
+        const productName = doc.querySelector('[itemprop="name"]')?.content || doc.querySelector('[property="og:title"]')?.content;
+        const productPrice = doc.querySelector('[itemprop="price"]')?.content;
+        const productColor = doc.querySelector('[itemprop="color"]')?.content;
+        const productModel = doc.querySelector('[itemprop="model"]')?.content;
+        const sellerName = doc.querySelector('[itemprop="seller"]')?.content || doc.querySelector('[itemprop="brand"]')?.content;
+        const productImage = doc.querySelector('[property="og:image"]')?.content || doc.querySelector('[itemprop="image"]')?.content;
+
+        // Отображение данных в блоке productDetails
+        if (productImage) {
+            document.getElementById("productImage").src = productImage;
+        }
+        if (productName) {
+            document.getElementById("productNameDisplay").innerText = `Название: ${productName}`;
+        }
+        if (productPrice) {
+            document.getElementById("productPriceDisplay").innerText = `Цена: ${productPrice} $`;
+        }
+        if (productColor) {
+            document.getElementById("productColorDisplay").innerText = `Цвет: ${productColor}`;
+        }
+        if (productModel) {
+            document.getElementById("productModelDisplay").innerText = `Модель: ${productModel}`;
+        }
+        if (sellerName) {
+            document.getElementById("productSellerDisplay").innerText = `Продавец: ${sellerName}`;
+        }
+
+        // Показать блок с данными
+        document.getElementById("productDetails").style.display = "block";
+
+    } catch (error) {
+        console.error("Ошибка загрузки данных:", error);
+        alert("Не удалось загрузить информацию о товаре.");
+    }
+}
