@@ -130,13 +130,41 @@ async function loadProductData() {
         const parser = new DOMParser();
         const doc = parser.parseFromString(data.contents, "text/html");
 
-        // Поиск микроразметки Schema.org и Open Graph
-        const productName = doc.querySelector('[itemprop="name"], [property="og:title"]')?.content;
-        const productPrice = doc.querySelector('[itemprop="price"], [property="product:price:amount"]')?.content;
-        const productColor = doc.querySelector('[itemprop="color"], [data-color]')?.content || doc.querySelector('[class*="color"]')?.innerText?.trim();
-        const productModel = doc.querySelector('[itemprop="model"], [property="product:model"]')?.content;
-        const sellerName = doc.querySelector('[itemprop="seller"], [itemprop="brand"], [property="og:site_name"]')?.content;
-        const productImage = doc.querySelector('[property="og:image"], [itemprop="image"]')?.content;
+        // 1️⃣ Название товара
+        let productName = doc.querySelector('[itemprop="name"], [property="og:title"], meta[name="title"]')?.content;
+        if (!productName) {
+            productName = doc.querySelector("h1")?.innerText.trim();
+        }
+
+        // 2️⃣ Цена товара
+        let productPrice = doc.querySelector('[itemprop="price"], [property="product:price:amount"], meta[property="og:price:amount"]')?.content;
+        if (!productPrice) {
+            productPrice = doc.querySelector(".price, .a-price-whole, .product-price, [class*='price']")?.innerText?.trim();
+        }
+
+        // 3️⃣ Цвет товара
+        let productColor = doc.querySelector('[itemprop="color"], [data-color], [class*="color"]')?.content;
+        if (!productColor) {
+            productColor = doc.querySelector("label[for*='color'] span, .variation-selector")?.innerText?.trim();
+        }
+
+        // 4️⃣ Модель товара
+        let productModel = doc.querySelector('[itemprop="model"], [property="product:model"], [class*="model"]')?.content;
+        if (!productModel) {
+            productModel = doc.querySelector(".product-model, .model-number, [class*='model']")?.innerText?.trim();
+        }
+
+        // 5️⃣ Продавец
+        let sellerName = doc.querySelector('[itemprop="seller"], [itemprop="brand"], [property="og:site_name"]')?.content;
+        if (!sellerName) {
+            sellerName = doc.querySelector(".seller-name, .merchant-info")?.innerText?.trim();
+        }
+
+        // 6️⃣ Изображение товара
+        let productImage = doc.querySelector('[property="og:image"], [itemprop="image"], meta[name="twitter:image"]')?.content;
+        if (!productImage) {
+            productImage = doc.querySelector("img[src*='product'], img[src*='image']")?.src;
+        }
 
         // Скрыть индикатор загрузки
         document.getElementById("loadingMessage").style.display = "none";
