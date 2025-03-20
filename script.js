@@ -130,41 +130,40 @@ async function loadProductData() {
         const parser = new DOMParser();
         const doc = parser.parseFromString(data.contents, "text/html");
 
-        // 1️⃣ Название товара
-        let productName = doc.querySelector('[itemprop="name"], [property="og:title"], meta[name="title"]')?.content;
-        if (!productName) {
-            productName = doc.querySelector("h1")?.innerText.trim();
-        }
+        // 1️⃣ Поиск JSON-LD (лучший способ найти данные на сложных сайтах)
+        let jsonLd = doc.querySelector('script[type="application/ld+json"]');
+        let jsonData = jsonLd ? JSON.parse(jsonLd.textContent) : null;
 
-        // 2️⃣ Цена товара
-        let productPrice = doc.querySelector('[itemprop="price"], [property="product:price:amount"], meta[property="og:price:amount"]')?.content;
-        if (!productPrice) {
-            productPrice = doc.querySelector(".price, .a-price-whole, .product-price, [class*='price']")?.innerText?.trim();
-        }
+        // 2️⃣ Название товара
+        let productName = jsonData?.name || 
+                          doc.querySelector('[itemprop="name"], [property="og:title"], meta[name="title"]')?.content || 
+                          doc.querySelector("h1")?.innerText.trim();
 
-        // 3️⃣ Цвет товара
-        let productColor = doc.querySelector('[itemprop="color"], [data-color], [class*="color"]')?.content;
-        if (!productColor) {
-            productColor = doc.querySelector("label[for*='color'] span, .variation-selector")?.innerText?.trim();
-        }
+        // 3️⃣ Цена товара
+        let productPrice = jsonData?.offers?.price ||
+                           doc.querySelector('[itemprop="price"], [property="product:price:amount"], meta[property="og:price:amount"]')?.content ||
+                           doc.querySelector(".price, .a-price-whole, .product-price, [class*='price']")?.innerText?.trim();
 
-        // 4️⃣ Модель товара
-        let productModel = doc.querySelector('[itemprop="model"], [property="product:model"], [class*="model"]')?.content;
-        if (!productModel) {
-            productModel = doc.querySelector(".product-model, .model-number, [class*='model']")?.innerText?.trim();
-        }
+        // 4️⃣ Цвет товара
+        let productColor = jsonData?.color ||
+                           doc.querySelector('[itemprop="color"], [data-color], [class*="color"]')?.content ||
+                           doc.querySelector("label[for*='color'] span, .variation-selector")?.innerText?.trim();
 
-        // 5️⃣ Продавец
-        let sellerName = doc.querySelector('[itemprop="seller"], [itemprop="brand"], [property="og:site_name"]')?.content;
-        if (!sellerName) {
-            sellerName = doc.querySelector(".seller-name, .merchant-info")?.innerText?.trim();
-        }
+        // 5️⃣ Модель товара
+        let productModel = jsonData?.model ||
+                           doc.querySelector('[itemprop="model"], [property="product:model"], [class*="model"]')?.content ||
+                           doc.querySelector(".product-model, .model-number, [class*='model']")?.innerText?.trim();
 
-        // 6️⃣ Изображение товара
-        let productImage = doc.querySelector('[property="og:image"], [itemprop="image"], meta[name="twitter:image"]')?.content;
-        if (!productImage) {
-            productImage = doc.querySelector("img[src*='product'], img[src*='image']")?.src;
-        }
+        // 6️⃣ Продавец
+        let sellerName = jsonData?.brand?.name ||
+                         jsonData?.offers?.seller?.name ||
+                         doc.querySelector('[itemprop="seller"], [itemprop="brand"], [property="og:site_name"]')?.content ||
+                         doc.querySelector(".seller-name, .merchant-info")?.innerText?.trim();
+
+        // 7️⃣ Изображение товара
+        let productImage = jsonData?.image ||
+                           doc.querySelector('[property="og:image"], [itemprop="image"], meta[name="twitter:image"]')?.content ||
+                           doc.querySelector("img[src*='product'], img[src*='image']")?.src;
 
         // Скрыть индикатор загрузки
         document.getElementById("loadingMessage").style.display = "none";
