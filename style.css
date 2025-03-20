@@ -147,6 +147,7 @@ p {
 #productDetails {
     display: none;
     margin-top: 15px;
+    margin-bottom: 15px;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
