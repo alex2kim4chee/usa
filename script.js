@@ -130,9 +130,20 @@ async function loadProductData() {
         const parser = new DOMParser();
         const doc = parser.parseFromString(data.contents, "text/html");
 
-        // 1️⃣ Поиск JSON-LD (лучший способ найти данные на сложных сайтах)
-        let jsonLd = doc.querySelector('script[type="application/ld+json"]');
-        let jsonData = jsonLd ? JSON.parse(jsonLd.textContent) : null;
+        // 1️⃣ Читаем все JSON-LD скрипты (может быть несколько)
+        let jsonLdScripts = doc.querySelectorAll('script[type="application/ld+json"]');
+        let jsonData = null;
+
+        jsonLdScripts.forEach(script => {
+            try {
+                const parsedData = JSON.parse(script.textContent);
+                if (parsedData["@type"] === "Product") {
+                    jsonData = parsedData;
+                }
+            } catch (e) {
+                console.warn("Ошибка парсинга JSON-LD:", e);
+            }
+        });
 
         // 2️⃣ Название товара
         let productName = jsonData?.name || 
@@ -141,16 +152,19 @@ async function loadProductData() {
 
         // 3️⃣ Цена товара
         let productPrice = jsonData?.offers?.price ||
+                           jsonData?.offers?.[0]?.price ||
                            doc.querySelector('[itemprop="price"], [property="product:price:amount"], meta[property="og:price:amount"]')?.content ||
                            doc.querySelector(".price, .a-price-whole, .product-price, [class*='price']")?.innerText?.trim();
 
         // 4️⃣ Цвет товара
         let productColor = jsonData?.color ||
+                           jsonData?.offers?.color ||
                            doc.querySelector('[itemprop="color"], [data-color], [class*="color"]')?.content ||
                            doc.querySelector("label[for*='color'] span, .variation-selector")?.innerText?.trim();
 
         // 5️⃣ Модель товара
         let productModel = jsonData?.model ||
+                           jsonData?.sku ||
                            doc.querySelector('[itemprop="model"], [property="product:model"], [class*="model"]')?.content ||
                            doc.querySelector(".product-model, .model-number, [class*='model']")?.innerText?.trim();
 
@@ -162,6 +176,7 @@ async function loadProductData() {
 
         // 7️⃣ Изображение товара
         let productImage = jsonData?.image ||
+                           jsonData?.offers?.image ||
                            doc.querySelector('[property="og:image"], [itemprop="image"], meta[name="twitter:image"]')?.content ||
                            doc.querySelector("img[src*='product'], img[src*='image']")?.src;
 
