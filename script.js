@@ -67,6 +67,7 @@ function generateWhatsAppLink(priceWithVAT, finalPrice) {
     sendRequestBtn.style.display = 'block';
     sendRequestBtn.onclick = () => window.open(whatsappLink, '_blank');
 }
+
 // Функция загрузки файлов в контейнеры
 function loadContent(containerId, filePath) {
     const container = document.getElementById(containerId);
@@ -84,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadContent("agentTermsContainer", "agent_terms.html");
 });
 
-// Логика аккордеона
+// Логика аккордеона с плавной прокруткой
 document.addEventListener("DOMContentLoaded", () => {
     const accordionButtons = document.querySelectorAll(".accordion-button");
 
@@ -101,6 +102,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Переключаем видимость текущего элемента
             content.style.display = (content.style.display === "block") ? "none" : "block";
+
+            // Если контент открыт, плавно прокручиваем страницу к нему
+            if (content.style.display === "block") {
+                setTimeout(() => {
+                    content.scrollIntoView({ behavior: "smooth", block: "start" });
+                }, 200); // Небольшая задержка, чтобы секция успела открыться
+            }
         });
     });
 });
