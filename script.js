@@ -68,14 +68,40 @@ function generateWhatsAppLink(priceWithVAT, finalPrice) {
     sendRequestBtn.onclick = () => window.open(whatsappLink, '_blank');
 }
 
-function loadTerms() {
-    const termsContainer = document.getElementById('termsContainer');
-    fetch('terms.html')
+// Функция загрузки файлов
+function loadContent(containerId, filePath) {
+    const container = document.getElementById(containerId);
+    fetch(filePath)
         .then(response => response.text())
         .then(data => {
-            termsContainer.innerHTML = data;
+            container.innerHTML = data;
         })
-        .catch(error => console.error('Ошибка загрузки условий:', error));
+        .catch(error => console.error(`Ошибка загрузки ${filePath}:`, error));
 }
 
-document.addEventListener("DOMContentLoaded", loadTerms);
+// Запускаем загрузку контента при загрузке страницы
+document.addEventListener("DOMContentLoaded", () => {
+    loadContent("termsContainer", "terms.html");
+    loadContent("agentTermsContainer", "agent_terms.html");
+});
+
+// Аккордеон для раскрытия секций
+document.addEventListener("DOMContentLoaded", () => {
+    const accordionButtons = document.querySelectorAll(".accordion-button");
+
+    accordionButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const content = button.nextElementSibling;
+            
+            // Закрываем другие открытые элементы
+            document.querySelectorAll(".accordion-content").forEach(item => {
+                if (item !== content) {
+                    item.style.display = "none";
+                }
+            });
+
+            // Переключаем видимость текущего элемента
+            content.style.display = (content.style.display === "block") ? "none" : "block";
+        });
+    });
+});

@@ -71,7 +71,8 @@ p {
     color: #777;
 }
 
-#termsContainer {
+/* Общие стили для всех документов (terms, agent_terms) */
+.terms-content {
     text-align: left;
     font-size: 0.9em;
     line-height: 1.6;
@@ -83,27 +84,73 @@ p {
     background-color: #f9f9f9;
 }
 
-#termsContainer h2 {
+.terms-content h2 {
     font-size: 1.2em;
     color: #222;
     margin-bottom: 10px;
     text-align: left;
 }
 
-#termsContainer h3 {
+.terms-content h3 {
     font-size: 1.1em;
     color: #333;
     margin-top: 15px;
 }
 
-#termsContainer ul {
+.terms-content ul {
     padding-left: 20px;
 }
 
-#termsContainer ul li {
+.terms-content ul li {
     margin-bottom: 5px;
 }
 
-#termsContainer p {
+.terms-content p {
     margin-bottom: 10px;
+}
+
+
+/* Стили для аккордеона */
+.accordion {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.accordion-item {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.accordion-button {
+    width: 100%;
+    background: #007bff;
+    color: white;
+    text-align: left;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background 0.3s;
+}
+
+.accordion-button:hover {
+    background: #0056b3;
+}
+
+.accordion-content {
+    display: none;
+    padding: 15px;
+    background: #f9f9f9;
+    border-top: 1px solid #ddd;
+}
+
+/* Стили для загруженного контента */
+#termsContainer, #agentTermsContainer {
+    text-align: left;
+    font-size: 0.9em;
+    line-height: 1.6;
+    color: #555;
 }
